@@ -13,8 +13,11 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class JsonSimpleParser {
@@ -34,53 +37,112 @@ public class JsonSimpleParser {
         Root root = new Root();
         JSONParser parser = new JSONParser();
 
-        Room1 room11 = new Room1("2021-05-06", "2021-05-10");  /*етот обєкт хочу добавить*/
+        try (FileReader reader = new FileReader("new.json")){
+            System.out.println("Print checkIn date please");
+            System.out.println("year-month-date");
+            Scanner userCheckInSc = new Scanner(System.in);
+            String userCheckIn = userCheckInSc.nextLine();
+            LocalDate userCheckInParse = null;
+            try {
+                userCheckInParse = LocalDate.parse(userCheckIn);
+            }catch (DateTimeException e){
+                e.printStackTrace();
+            }
+            System.out.println("Print checkOut date please");
+            System.out.println("year-month-date");
+            Scanner userCheckOutSc = new Scanner(System.in);
+            String userCheckOut = userCheckOutSc.nextLine();
+            LocalDate userCheckOutParse;
+            try {
+                userCheckOutParse = LocalDate.parse(userCheckOut);
+            }catch (DateTimeException e){
+                e.printStackTrace();
+            }
 
-        try (FileReader reader = new FileReader("new.json");){
             JSONObject rootObj = (JSONObject) parser.parse(reader);
             String name = (String) rootObj.get("name");
+            List<Room1>bookingsList = new LinkedList<>();
 
-            List<Room1>room1s = new LinkedList<>();
-
-            JSONArray arrayPeople = (JSONArray) rootObj.get("room1");
-            for (Object run: arrayPeople){
+            JSONArray arrayBookingsRoom1 = (JSONArray) rootObj.get("room1");
+            for (Object run: arrayBookingsRoom1){
                 JSONObject bookings = (JSONObject) run;
                 String checkIn = (String) bookings.get("checkIn");
                 String checkOut = (String) bookings.get("checkOut");
 
+                LocalDate checkInJsonParse = null;
+                try {
+                    checkInJsonParse = LocalDate.parse(checkIn);
+                }catch (DateTimeException e){
+                    e.printStackTrace();
+                }
+                LocalDate checkOutJsonParse=null;
+                try{
+                    checkOutJsonParse = LocalDate.parse(checkOut);
+                }catch (DateTimeException e){
+                    e.printStackTrace();
+                }
+
+                if (userCheckInParse.compareTo(checkInJsonParse)==0||
+                        userCheckInParse.compareTo(checkInJsonParse)>0&&
+                                userCheckInParse.compareTo(checkOutJsonParse)<0||
+                                userCheckInParse.compareTo(checkOutJsonParse)==0){
+                    System.out.println("Date is already booked ");
+                    System.out.println("Try another date please");
+                    System.exit(0);
+                }
+
+
                 Room1 room1 = new Room1(checkIn, checkOut);
 
-                room1s.add(room1);
+                bookingsList.add(room1);
 
-                JSONObject check = new JSONObject();
-                JSONObject main = new JSONObject();
-                check.put("checkIn", checkIn);
-                check.put("checkOut", checkOut);
-
-                JSONArray jsonArray = new JSONArray();
-                jsonArray.add(check);
-                main.put("room1", jsonArray);
-                main.put("name", "Adrian");
-
-                FileWriter fileWriter = new FileWriter("new.json");
-                fileWriter.write(main.toJSONString());
-                fileWriter.flush();
-
-            }
-            room1s.add(room11);
+                }
+            Room1 newCheckIn = new Room1(userCheckIn, userCheckOut);
+            bookingsList.add(newCheckIn);
             root.setName(name);
-            root.setRoom1(room1s);
-
-
+            root.setRoom1(bookingsList);
+            System.out.println("Hotel "+root.getName());
+            System.out.println("Date from " +userCheckIn+" till "+userCheckOut+" was booked successful !!!");
 
             return root;
+
+
         }catch (Exception e){
             e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public void isAvailableCheck(String checkInStr, String checkOutStr){
+        LocalDate checkIn=null;
+        try {
+            LocalDate localDate = LocalDate.now();
+            checkIn = LocalDate.parse(checkInStr);
+            if(checkIn.compareTo(localDate)<=0){
+                System.err.println("Booking date cant be in past");
+                System.exit(0);
+            }
+        }catch (DateTimeException e ){
+            System.out.println("Enter right data, start again");
+            System.exit(0);
+        }
+        LocalDate checkOut=null;
+        try {
+            LocalDate localDate = LocalDate.now();
+            checkOut = LocalDate.parse(checkOutStr);
+            if(checkIn.compareTo(localDate)<=0){
+                System.err.println("Booking date cant be in past");
+                System.exit(0);
+            }
+        }catch (DateTimeException e ){
+            System.out.println("Enter right data, start again");
+            System.exit(0);
         }
 
 
 
-        return null;
+
     }
 
 public void writeDataToJson(){
@@ -112,7 +174,7 @@ public void writeDataToJson(){
     extraMain.add(main);
     try {
         FileWriter fileWriter = new FileWriter("new.json", true);
-        fileWriter.write(main.toJSONString());
+        fileWriter.write(extraMain.toJSONString());
         fileWriter.flush();
     }catch (Exception e){
         e.printStackTrace();
