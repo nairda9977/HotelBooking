@@ -1,20 +1,10 @@
 package com.solvd.hotels.Operation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SequenceWriter;
-import com.solvd.hotels.Hotels.MirabelAntaliaResort;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
-
 import java.util.Scanner;
 
 public class Operation {
-
 
     public void booking(){
         System.out.println("Print name number");
@@ -52,7 +42,7 @@ public class Operation {
             System.out.println("Booked");
         }else System.out.println("CheckIn cant be latest than checkOut");
 
-        try {
+/*        try {
             File file = new File("mira.json");
             FileWriter fileWriter = new FileWriter(file, true);
 
@@ -60,12 +50,12 @@ public class Operation {
 
             SequenceWriter seqWriter = mapper.writer().writeValues(fileWriter);
 
-            seqWriter.write(new MirabelAntaliaResort(nameNum, checkInStr, checkOutStr));
+            seqWriter.write(new Root(nameNum, checkInStr, checkOutStr));
 
             seqWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
