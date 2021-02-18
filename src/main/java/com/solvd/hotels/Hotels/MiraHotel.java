@@ -3,12 +3,9 @@ package com.solvd.hotels.Hotels;
 
 import java.util.List;
 
-public class Root extends AntaliaHotels{
+public class MiraHotel extends AntaliaHotels{
     private String name;
     private List <Room1> room1;
-
-
-
 
     public void setName(String name) {
         this.name = name;

@@ -8,8 +8,6 @@ public class Room1 {
 
     }
 
-
-
     public Room1(String checkIn, String checkOut){
          this.checkIn=checkIn;
          this.checkOut=checkOut;
