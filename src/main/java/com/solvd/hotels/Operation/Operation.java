@@ -24,17 +24,13 @@ public class Operation {
         MiraHotel miraHotel = new MiraHotel();
         JSONParser parser = new JSONParser();
         try (FileReader reader = new FileReader("MiraHotel.json")) {
-            System.out.println("Print checkIn date please");
-            System.out.println("year-month-date");
-            Scanner userCheckInSc = new Scanner(System.in);
-            String userCheckIn = userCheckInSc.nextLine();
+
+            String userCheckIn = checkInInput();
 
             LocalDate userCheckInParse = checkInPastCheck(userCheckIn);
             LOGGER.info("checkInPastCheck CHECKED");
-            System.out.println("Print checkOut date please");
-            System.out.println("year-month-date");
-            Scanner userCheckOutSc = new Scanner(System.in);
-            String userCheckOut = userCheckOutSc.nextLine();
+
+            String userCheckOut =checkOutInput();
 
             LocalDate userCheckOutParse = checkInAfterCheckOutCheck(userCheckOut, userCheckInParse);
             LOGGER.info("checkInAfterCheckOutCheck CHECKED");
@@ -77,6 +73,21 @@ public class Operation {
         return null;
     }
 
+    public String checkInInput(){
+        System.out.println("Print checkIn date please");
+        System.out.println("year-month-date");
+        Scanner userCheckInSc = new Scanner(System.in);
+        String userCheckIn = userCheckInSc.nextLine();
+        return userCheckIn;
+    }
+    
+    public String checkOutInput(){
+        System.out.println("Print checkOut date please");
+        System.out.println("year-month-date");
+        Scanner userCheckOutSc = new Scanner(System.in);
+        String userCheckOut = userCheckOutSc.nextLine();
+        return userCheckOut;
+    }
 
     public void bookedDatesCheck(LocalDate userCheckInParse, LocalDate userCheckOutParse, LocalDate checkInJsonParse, LocalDate checkOutJsonParse) {
         if (userCheckInParse.compareTo(checkInJsonParse) == 0 ||
